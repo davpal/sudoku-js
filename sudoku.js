@@ -133,13 +133,29 @@ var cells = document.querySelectorAll("td");
 cells.forEach(function(cell, i) {
     var row = Math.floor(i / 9);
     var col = i % 9;
-    cell.textContent = board[row][col] != 0 ? board[row][col] : '';
+    cell.textContent = board[row][col];
     cell.addEventListener('mouseover', function(event) {
         onRowColumnHover(cell);
     });
     cell.addEventListener('mouseleave', function() {
         onRowColumnHover(cell);
     });
+    cell.addEventListener('click', function(event) {
+        var rows = Array.from(cell.parentNode.parentNode.children);
+        rows.forEach(function(tableRow) {
+            Array.from(tableRow.children).forEach(function(cellDom) {
+                cellDom.classList.remove('rowcol-selected');
+                if(cellDom.textContent === cell.textContent) {
+                    cellDom.classList.add('number-selected');
+                } else {
+                    cellDom.classList.remove('number-selected');
+                }
+                tableRow.children[cell.cellIndex].classList.add('rowcol-selected');
+            });
+            tableRow.classList.remove('rowcol-selected');
+        });
+        cell.parentNode.classList.add('rowcol-selected');
+    })
 });
 
 function onRowColumnHover(cell) {

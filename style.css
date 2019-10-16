@@ -31,12 +31,20 @@ body {
     background: #eee;
 }
 
+.number-selected {
+    background: rgb(95, 231, 255);
+}
+
+.rowcol-selected {
+    background: rgb(180, 226, 235);
+}
+
 .sudoku td:nth-child(3),
 .sudoku td:nth-child(6) {
-    border-right: 2px solid #777;
+    border-right: 5px solid #777;
 }
 
 .sudoku tr:nth-child(3) td,
 .sudoku tr:nth-child(6) td {
-    border-bottom: 2px solid #777;
+    border-bottom: 5px solid #777;
 }
