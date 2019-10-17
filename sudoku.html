@@ -9,6 +9,20 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <header>
+        <div class="container">
+            <h1>Sudoku.js</h1>
+            <div class="nav">
+                <button id="newgame">New Game</button>
+            </div>
+            <div id="game-control">
+                <button id="easy">Easy</button>
+                <button id="medium">Medium</button>
+                <button id="hard">Hard</button>
+            </div>
+        </div>
+    </header>
+    <div class="container" style="overflow-x: auto;">
     <table class="sudoku">
         <tbody>
             <tr>
@@ -112,7 +126,7 @@
             </tr>
         </tbody>
     </table>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.5.3/rxjs.umd.min.js" integrity="sha256-opvkRN8JcEjsFLLVkYM5d5n54MuZJBkljuRb5E4sQrk=" crossorigin="anonymous"></script>
+    </div>
     <script src="sudoku.js"></script>
 </body>
 </html>

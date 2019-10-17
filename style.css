@@ -1,13 +1,17 @@
-body {
+html, body {
     font-family: 'Anton', Arial, Helvetica, sans-serif;
-    font-size: 2em;
+    margin: 0;
+    padding: 0;
+    background: steelblue;
+    color: white;
 }
 
 .sudoku {
     cursor: pointer;
-    margin: 0 auto;
+    margin: 20px auto;
     border-spacing: 0;
     border-collapse: collapse;
+    font-size: 2em;
 }
 
 .sudoku tr {
@@ -19,32 +23,74 @@ body {
     width: 50px;
     height: 50px;
     text-align: center;
-    border: 1px solid #bbb;
+    border: 1px solid #fff;
     transition: 0.3s all;
 }
 
 .sudoku td:hover {
-    background: #ccc;
+    background: skyblue;
+    color: steelblue;
 }
 
 .row-hover {
-    background: #eee;
+    background: skyblue;
+    color: steelblue;
 }
 
-.number-selected {
-    background: rgb(95, 231, 255);
+td.number-selected {
+    background: orangered;
+    color: #fff;
 }
 
 .rowcol-selected {
-    background: rgb(180, 226, 235);
+    background: skyblue;
+    color: steelblue;
 }
 
 .sudoku td:nth-child(3),
 .sudoku td:nth-child(6) {
-    border-right: 5px solid #777;
+    border-right: 5px solid #fff;
 }
 
 .sudoku tr:nth-child(3) td,
 .sudoku tr:nth-child(6) td {
-    border-bottom: 5px solid #777;
+    border-bottom: 5px solid #fff;
+}
+
+.container {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.nav, #game-control {
+    width: 100%;
+    background: #000;
+    transition: 0.5s all;
+}
+
+#game-control {
+    display: none;
+}
+
+h1 {
+    letter-spacing: 2px;
+}
+
+button {
+    background: #000;
+    color: white;
+    transition: 0.5s;
+    border: 0px;
+    margin: 0;
+    padding: 10px 20px;
+    font-family: 'Anton', Arial, Helvetica, sans-serif;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #fff;
+    color: steelblue;
 }

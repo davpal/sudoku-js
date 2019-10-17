@@ -33,14 +33,12 @@ function validGrid(grid) {
         var rowTotal = grid[i].reduce(function(a, b) {
             return a + b;
         }, 0);
-        console.log("row sum: " + rowTotal);
         if(rowTotal !== 45) return false;
 
         var colTotal = 0;
         for(var j = 0; j < 9; j++) {
             colTotal += grid[j][i];
         }
-        console.log("col sum: " + colTotal);
         if(colTotal !== 45) return false;
     }
 
@@ -73,7 +71,6 @@ function getGridSquare(grid, row, col) {
     return square;
 }
 
-var counter = 0;
 function fillGrid(grid) {
     for(var i = 0; i < 81; ++i) {
         var row = Math.floor(i / 9);
@@ -81,7 +78,6 @@ function fillGrid(grid) {
         if(grid[row][col] === 0) {
             shuffle(numberList);
             for(var j = 0; j < 9; j++) {
-                console.log(j);
                 if(!grid[row].includes(numberList[j])) {
                     var inCol = false;
                     for(var i = 0; i < 9; ++i)
@@ -138,8 +134,7 @@ function solveGrid(grid) {
     grid[row][col] = 0;
 }
 
-function prepareGrid(grid) {
-    var attempts = 10;
+function prepareGrid(grid, attempts) {
     while(attempts) {
         var row = Math.floor(Math.random() * 9);
         var col = Math.floor(Math.random() * 9);
@@ -153,20 +148,18 @@ function prepareGrid(grid) {
         grid[row][col] = 0;
 
         var gridCopy = grid.slice();
-        console.log(gridCopy);
+
         counter = 0;
         solveGrid(gridCopy);
-        console.log(counter);
         if(counter != 1) {
             grid[row][col] = backup;
             --attempts;
         }
-        console.log(grid);
     }
 }
 
-fillGrid(board);
-prepareGrid(board);
+///fillGrid(board);
+//prepareGrid(board, 5);
 
 var cells = document.querySelectorAll("td");
 
@@ -184,7 +177,6 @@ cells.forEach(function(cell, i) {
     });
     cell.addEventListener('click', function(event) {
         var rows = Array.from(cell.parentNode.parentNode.children);
-        console.log(cell.textContent);
         rows.forEach(function(tableRow) {
             Array.from(tableRow.children).forEach(function(cellDom) {
                 cellDom.classList.remove('rowcol-selected');
@@ -208,47 +200,58 @@ function onRowColumnHover(cell) {
         tableRow.children[cell.cellIndex].classList.toggle('row-hover');
     });
 }
-/*
-for i in range(0,81):
-row=i//9
-col=i%9
-if grid[row][col]==0:
-  shuffle(numberList)      
-  for value in numberList:
-    #Check that this value has not already be used on this row
-    if not(value in grid[row]):
-      #Check that this value has not already be used on this column
-      if not value in (grid[0][col],grid[1][col],grid[2][col],grid[3][col],grid[4][col],grid[5][col],grid[6][col],grid[7][col],grid[8][col]):
-        #Identify which of the 9 squares we are working on
-        square=[]
-        if row<3:
-          if col<3:
-            square=[grid[i][0:3] for i in range(0,3)]
-          elif col<6:
-            square=[grid[i][3:6] for i in range(0,3)]
-          else:  
-            square=[grid[i][6:9] for i in range(0,3)]
-        elif row<6:
-          if col<3:
-            square=[grid[i][0:3] for i in range(3,6)]
-          elif col<6:
-            square=[grid[i][3:6] for i in range(3,6)]
-          else:  
-            square=[grid[i][6:9] for i in range(3,6)]
-        else:
-          if col<3:
-            square=[grid[i][0:3] for i in range(6,9)]
-          elif col<6:
-            square=[grid[i][3:6] for i in range(6,9)]
-          else:  
-            square=[grid[i][6:9] for i in range(6,9)]
-        #Check that this value has not already be used on this 3x3 square
-        if not value in (square[0] + square[1] + square[2]):
-          grid[row][col]=value
-          if checkGrid(grid):
-            return True
-          else:
-            if fillGrid(grid):
-              return True
-  break
-grid[row][col]=0             */
+
+var newgame = document.querySelector("#newgame");
+var gamecontrol = document.querySelector("#game-control");
+newgame.addEventListener('click', function() {
+    newgame.style.display = 'none';
+    gamecontrol.style.display = 'block';
+});
+
+Array.from(gamecontrol.children).forEach(function(button) {
+    var attempts = 5;
+    switch(button.id) {
+        case 'easy':
+            attempts = 5;
+            break;
+        case 'medium':
+            attempts = 10;
+            break;
+        case 'hard':
+            attempts = 20;
+            break;
+    }
+    button.addEventListener('click', function(event) {
+        clearGrid();
+        console.log(board);
+        fillGrid(board);
+        console.log(board);
+        prepareGrid(board, attempts);
+        cells.forEach(function(cell, i) {
+            var row = Math.floor(i / 9);
+            var col = i % 9;
+            if(board[row][col] != 0) {
+                cell.textContent = board[row][col];
+            }
+        });
+        newgame.style.display = 'inline-block';
+        gamecontrol.style.display = 'none';
+    });
+})
+
+
+function clearGrid() {
+    board = [];
+    board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    cells.forEach(function(cell) {
+        cell.textContent = '';
+    });
+}
