@@ -24,7 +24,8 @@ html, body {
     height: 50px;
     text-align: center;
     border: 1px solid #fff;
-    transition: 0.3s all;
+    transition: 0.3s background;
+    caret-color: transparent;
 }
 
 .sudoku td:hover {
@@ -40,6 +41,11 @@ html, body {
 td.number-selected {
     background: orangered;
     color: #fff;
+}
+
+.sudoku td.number-active {
+    background: #eee;
+    color: steelblue;
 }
 
 .rowcol-selected {

@@ -143,7 +143,6 @@ function prepareGrid(grid, attempts) {
             row = Math.floor(Math.random() * 9);
             col = Math.floor(Math.random() * 9);    
         }
-
         var backup = grid[row][col];
         grid[row][col] = 0;
 
@@ -158,8 +157,10 @@ function prepareGrid(grid, attempts) {
     }
 }
 
-///fillGrid(board);
-//prepareGrid(board, 5);
+fillGrid(board);
+prepareGrid(board, 5);
+var cc = board.slice();
+solveGrid(cc);
 
 var cells = document.querySelectorAll("td");
 
@@ -184,13 +185,40 @@ cells.forEach(function(cell, i) {
                     cellDom.classList.add('number-selected');
                 } else {
                     cellDom.classList.remove('number-selected');
+                    cellDom.classList.remove('number-active');
                 }
                 tableRow.children[cell.cellIndex].classList.add('rowcol-selected');
             });
             tableRow.classList.remove('rowcol-selected');
         });
         cell.parentNode.classList.add('rowcol-selected');
-    })
+        cell.classList.add('number-active');
+        if(board[row][col] == 0) {
+            cell.contentEditable = 'true';
+            cell.focus();
+        }
+    });
+    cell.addEventListener('keypress', function(event) {
+        var e = event ? event : window.event;
+        e.preventDefault();
+        var code = e.which ? e.which : e.keyCode;
+        if(code > 0x30 && code <= 0x39) {
+            cell.textContent = String.fromCharCode(code);
+            var rows = Array.from(cell.parentNode.parentNode.children);
+            rows.forEach(function(tableRow) {
+                Array.from(tableRow.children).forEach(function(cellDom) {
+                    cellDom.classList.remove('rowcol-selected');
+                    if(cell.textContent != '' && cellDom.textContent === cell.textContent) {
+                        cellDom.classList.add('number-selected');
+                    } else {
+                        cellDom.classList.remove('number-selected');
+                    }
+                    tableRow.children[cell.cellIndex].classList.add('rowcol-selected');
+                });
+                tableRow.classList.remove('rowcol-selected');
+            });
+        }
+    });
 });
 
 function onRowColumnHover(cell) {
@@ -202,10 +230,25 @@ function onRowColumnHover(cell) {
 }
 
 var newgame = document.querySelector("#newgame");
+var solve = document.querySelector("#solve");
 var gamecontrol = document.querySelector("#game-control");
 newgame.addEventListener('click', function() {
     newgame.style.display = 'none';
     gamecontrol.style.display = 'block';
+});
+
+solve.addEventListener('click', function() {
+    solveGrid(board);
+    cells.forEach(function(cell, i) {
+        var row = Math.floor(i / 9);
+        var col = i % 9;
+        if(board[row][col] != 0) {
+            cell.textContent = board[row][col];
+        }
+        if(Array.from(cell.classList).includes('number-selected')) {
+            cell.click();
+        }
+    });
 });
 
 Array.from(gamecontrol.children).forEach(function(button) {
@@ -223,15 +266,16 @@ Array.from(gamecontrol.children).forEach(function(button) {
     }
     button.addEventListener('click', function(event) {
         clearGrid();
-        console.log(board);
         fillGrid(board);
-        console.log(board);
         prepareGrid(board, attempts);
         cells.forEach(function(cell, i) {
             var row = Math.floor(i / 9);
             var col = i % 9;
             if(board[row][col] != 0) {
                 cell.textContent = board[row][col];
+            }
+            if(Array.from(cell.classList).includes('number-selected')) {
+                cell.click();
             }
         });
         newgame.style.display = 'inline-block';
