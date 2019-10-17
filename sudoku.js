@@ -91,9 +91,9 @@ function fillGrid(grid) {
                     var square = getGridSquare(grid, row, col);
                     if(!square.includes(numberList[j])) {
                         grid[row][col] = numberList[j];
-                        if(checkGrid(grid))
+                        if(checkGrid(grid)) {
                             return true;
-                        else {
+                        } else {
                             if(fillGrid(grid))
                                 return true;
                         }
@@ -106,14 +106,76 @@ function fillGrid(grid) {
     grid[row][col] = 0;
 }
 
+var counter = 0;
+function solveGrid(grid) {
+    for(var i = 0; i < 81; ++i) {
+        var row = Math.floor(i / 9);
+        var col = i % 9;
+        if(grid[row][col] === 0) {
+            for(var j = 1; j <= 9; j++) {
+                if(!grid[row].includes(j)) {
+                    var inCol = false;
+                    for(var i = 0; i < 9; ++i)
+                        if(grid[i][col] == j) inCol = true;
+                    if(inCol) continue;
+
+                    var square = getGridSquare(grid, row, col);
+                    if(!square.includes(j)) {
+                        grid[row][col] = j;
+                        if(checkGrid(grid)) {
+                            ++counter;
+                            break;
+                        } else {
+                            if(solveGrid(grid))
+                                return true;
+                        }
+                    }
+                }
+            }
+            break;
+        }
+    }
+    grid[row][col] = 0;
+}
+
+function prepareGrid(grid) {
+    var attempts = 10;
+    while(attempts) {
+        var row = Math.floor(Math.random() * 9);
+        var col = Math.floor(Math.random() * 9);
+
+        while(grid[row][col] == 0) {
+            row = Math.floor(Math.random() * 9);
+            col = Math.floor(Math.random() * 9);    
+        }
+
+        var backup = grid[row][col];
+        grid[row][col] = 0;
+
+        var gridCopy = grid.slice();
+        console.log(gridCopy);
+        counter = 0;
+        solveGrid(gridCopy);
+        console.log(counter);
+        if(counter != 1) {
+            grid[row][col] = backup;
+            --attempts;
+        }
+        console.log(grid);
+    }
+}
+
 fillGrid(board);
+prepareGrid(board);
 
 var cells = document.querySelectorAll("td");
 
 cells.forEach(function(cell, i) {
     var row = Math.floor(i / 9);
     var col = i % 9;
-    cell.textContent = board[row][col];
+    if(board[row][col] != 0) {
+        cell.textContent = board[row][col];
+    }
     cell.addEventListener('mouseover', function(event) {
         onRowColumnHover(cell);
     });
@@ -122,10 +184,11 @@ cells.forEach(function(cell, i) {
     });
     cell.addEventListener('click', function(event) {
         var rows = Array.from(cell.parentNode.parentNode.children);
+        console.log(cell.textContent);
         rows.forEach(function(tableRow) {
             Array.from(tableRow.children).forEach(function(cellDom) {
                 cellDom.classList.remove('rowcol-selected');
-                if(cellDom.textContent === cell.textContent) {
+                if(cell.textContent != '' && cellDom.textContent === cell.textContent) {
                     cellDom.classList.add('number-selected');
                 } else {
                     cellDom.classList.remove('number-selected');
