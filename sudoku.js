@@ -55,8 +55,22 @@ function validGrid(grid) {
             if(squareSum !== 45) return false;
         }
 
-    console.log('what');
     return true;
+}
+
+function getGridSquare(grid, row, col) {
+    var square = [];
+
+    var si = Math.floor(row / 3) * 3;
+    var sj = Math.floor(col / 3) * 3;
+ 
+    for(var i = si; i < si + 3; ++i) {
+        for(var j = sj; j < sj + 3; ++j) {
+            square.push(grid[i][j]);
+        }
+    }
+
+    return square;
 }
 
 var counter = 0;
@@ -74,42 +88,8 @@ function fillGrid(grid) {
                         if(grid[i][col] == numberList[j]) inCol = true;
                     if(inCol) continue;
 
-                    var square = [];
-                    if(row < 3) {
-                        if(col < 3) {
-                            for(var i = 0; i < 3; ++i)
-                                square.push(grid[i].slice(0, 3));
-                        } else if(col < 6) {
-                            for(var i = 0; i < 3; ++i)
-                                square.push(grid[i].slice(3, 6));
-                        } else {
-                            for(var i = 0; i < 3; ++i)
-                                square.push(grid[i].slice(6, 9));
-                        }
-                    } else if(row < 6) {
-                        if(col < 3) {
-                            for(var i = 3; i < 6; ++i)
-                                square.push(grid[i].slice(0, 3));
-                        } else if(col < 6) {
-                            for(var i = 3; i < 6; ++i)
-                                square.push(grid[i].slice(3, 6));
-                        } else {
-                            for(var i = 3; i < 6; ++i)
-                                square.push(grid[i].slice(6, 9));
-                        }
-                    } else {
-                        if(col < 3) {
-                            for(var i = 6; i < 9; ++i)
-                                square.push(grid[i].slice(0, 3));
-                        } else if(col < 6) {
-                            for(var i = 6; i < 9; ++i)
-                                square.push(grid[i].slice(3, 6));
-                        } else {
-                            for(var i = 6; i < 9; ++i)
-                                square.push(grid[i].slice(6, 9));
-                        }
-                    }
-                    if(!square[0].includes(numberList[j]) && !square[1].includes(numberList[j]) && !square[2].includes(numberList[j])) {
+                    var square = getGridSquare(grid, row, col);
+                    if(!square.includes(numberList[j])) {
                         grid[row][col] = numberList[j];
                         if(checkGrid(grid))
                             return true;
