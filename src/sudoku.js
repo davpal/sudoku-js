@@ -1,4 +1,6 @@
-"use strict";
+import { initDomBoard } from './dom';
+
+initDomBoard();
 
 let board = [];
 board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
@@ -263,6 +265,7 @@ let solve = document.querySelector("#solve");
 let gamecontrol = document.querySelector("#game-control");
 newgame.addEventListener('click', function() {
     newgame.style.display = 'none';
+    solve.style.display = 'none';
     gamecontrol.style.display = 'block';
 });
 
@@ -308,6 +311,7 @@ Array.from(gamecontrol.children).forEach(function(button) {
             }
         });
         newgame.style.display = 'inline-block';
+        solve.style.display = 'inline-block';
         gamecontrol.style.display = 'none';
     });
 })
