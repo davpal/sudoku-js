@@ -1,6 +1,6 @@
 "use strict";
 
-var board = [];
+let board = [];
 board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
 board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
 board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
@@ -11,10 +11,10 @@ board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
 board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
 board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
 
-var numberList = [1,2,3,4,5,6,7,8,9];
+let numberList = [1,2,3,4,5,6,7,8,9];
 
 function shuffle(a) {
-    for (var i = a.length - 1; i > 0; i--) {
+    for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [a[i], a[j]] = [a[j], a[i]];
     }
@@ -22,31 +22,31 @@ function shuffle(a) {
 }
 
 function checkGrid(grid) {
-    for(var i = 0; i < 9; ++i)
-        for(var j = 0; j < 9; ++j) 
+    for(let i = 0; i < 9; ++i)
+        for(let j = 0; j < 9; ++j) 
             if(grid[i][j] === 0) return false;
     return true;
 }
 
 function validGrid(grid) {
-    for(var i = 0; i < 9; ++i) {
-        var rowTotal = grid[i].reduce(function(a, b) {
+    for(let i = 0; i < 9; ++i) {
+        let rowTotal = grid[i].reduce(function(a, b) {
             return a + b;
         }, 0);
         if(rowTotal !== 45) return false;
 
-        var colTotal = 0;
-        for(var j = 0; j < 9; j++) {
+        let colTotal = 0;
+        for(let j = 0; j < 9; j++) {
             colTotal += grid[j][i];
         }
         if(colTotal !== 45) return false;
     }
 
-    for(var k = 0; k < 3; ++k)
-        for(var l = 0; l < 3; ++l) {
-            for(var i = 0; i < 3; ++i) {
-                var squareSum = 0;
-                for(var j = 0; j < 3; j++) {
+    for(let k = 0; k < 3; ++k)
+        for(let l = 0; l < 3; ++l) {
+            for(let i = 0; i < 3; ++i) {
+                let squareSum = 0;
+                for(let j = 0; j < 3; j++) {
                     squareSum += grid[i*k][j*l];
                 }
             }
@@ -57,13 +57,13 @@ function validGrid(grid) {
 }
 
 function getGridSquare(grid, row, col) {
-    var square = [];
+    let square = [];
 
-    var si = Math.floor(row / 3) * 3;
-    var sj = Math.floor(col / 3) * 3;
+    let si = Math.floor(row / 3) * 3;
+    let sj = Math.floor(col / 3) * 3;
  
-    for(var i = si; i < si + 3; ++i) {
-        for(var j = sj; j < sj + 3; ++j) {
+    for(let i = si; i < si + 3; ++i) {
+        for(let j = sj; j < sj + 3; ++j) {
             square.push(grid[i][j]);
         }
     }
@@ -72,19 +72,20 @@ function getGridSquare(grid, row, col) {
 }
 
 function fillGrid(grid) {
-    for(var i = 0; i < 81; ++i) {
-        var row = Math.floor(i / 9);
-        var col = i % 9;
+    let row, col;
+    for(let i = 0; i < 81; ++i) {
+        row = Math.floor(i / 9);
+        col = i % 9;
         if(grid[row][col] === 0) {
             shuffle(numberList);
-            for(var j = 0; j < 9; j++) {
+            for(let j = 0; j < 9; j++) {
                 if(!grid[row].includes(numberList[j])) {
-                    var inCol = false;
-                    for(var i = 0; i < 9; ++i)
+                    let inCol = false;
+                    for(let i = 0; i < 9; ++i)
                         if(grid[i][col] == numberList[j]) inCol = true;
                     if(inCol) continue;
 
-                    var square = getGridSquare(grid, row, col);
+                    let square = getGridSquare(grid, row, col);
                     if(!square.includes(numberList[j])) {
                         grid[row][col] = numberList[j];
                         if(checkGrid(grid)) {
@@ -102,51 +103,81 @@ function fillGrid(grid) {
     grid[row][col] = 0;
 }
 
-var counter = 0;
-function solveGrid(grid) {
-    for(var i = 0; i < 81; ++i) {
-        var row = Math.floor(i / 9);
-        var col = i % 9;
-        if(grid[row][col] === 0) {
-            for(var j = 1; j <= 9; j++) {
-                if(!grid[row].includes(j)) {
-                    var inCol = false;
-                    for(var i = 0; i < 9; ++i)
-                        if(grid[i][col] == j) inCol = true;
-                    if(inCol) continue;
-
-                    var square = getGridSquare(grid, row, col);
-                    if(!square.includes(j)) {
-                        grid[row][col] = j;
-                        if(checkGrid(grid)) {
-                            ++counter;
-                            break;
-                        } else {
-                            if(solveGrid(grid))
-                                return true;
-                        }
-                    }
-                }
-            }
-            break;
+function columnContains(grid, col, value) {
+    for(let i = 0; i < grid.length; ++i) {
+        if(grid[i][col] === value) {
+            return true;
         }
     }
+    return false;
+}
+
+function rowContains(grid, row, value) {
+    return grid[row].includes(value);
+}
+
+function squareContains(grid, row, col, value) {
+    let square = getGridSquare(grid, row, col);
+    return square.includes(value)
+}
+
+function isApplicable(grid, row, col, value) {
+    return !columnContains(grid, col, value) &&
+           !rowContains(grid, row, value) &&
+           !squareContains(grid, row, col, value);
+}
+
+function findUnnassigned(grid) {
+    for(let i = 0; i < grid.length; ++i) {
+        for(let j = 0; j < grid[i].length; ++j) {
+            if(grid[i][j] === 0) {
+                return [i, j];
+            }
+        }
+    }
+    return [];
+}
+
+let counter = 0;
+function solveGrid(grid) {
+    let [row, col] = findUnnassigned(grid);
+    if(!row) return true;
+
+    for(let i = 1; i <= 9; i++) {
+        if(isApplicable(grid, row, col, i)) {
+            grid[row][col] = i;
+            
+            if(checkGrid(grid)) {
+                counter++;
+                break;
+            }
+
+            if(solveGrid(grid)) {
+                return true;
+            }
+
+            grid[row][col] = 0;
+        }
+    }
+
     grid[row][col] = 0;
+      
+    return false;
 }
 
 function prepareGrid(grid, attempts) {
     while(attempts) {
-        var row = Math.floor(Math.random() * 9);
-        var col = Math.floor(Math.random() * 9);
+        let row = Math.floor(Math.random() * 9);
+        let col = Math.floor(Math.random() * 9);
 
         while(grid[row][col] == 0) {
             row = Math.floor(Math.random() * 9);
             col = Math.floor(Math.random() * 9);    
         }
-        var backup = grid[row][col];
+        let backup = grid[row][col];
         grid[row][col] = 0;
 
-        var gridCopy = grid.slice();
+        let gridCopy = grid.slice();
 
         counter = 0;
         solveGrid(gridCopy);
@@ -159,14 +190,12 @@ function prepareGrid(grid, attempts) {
 
 fillGrid(board);
 prepareGrid(board, 5);
-var cc = board.slice();
-solveGrid(cc);
 
-var cells = document.querySelectorAll("td");
+let cells = document.querySelectorAll("td");
 
 cells.forEach(function(cell, i) {
-    var row = Math.floor(i / 9);
-    var col = i % 9;
+    let row = Math.floor(i / 9);
+    let col = i % 9;
     if(board[row][col] != 0) {
         cell.textContent = board[row][col];
     }
@@ -177,7 +206,7 @@ cells.forEach(function(cell, i) {
         onRowColumnHover(cell);
     });
     cell.addEventListener('click', function(event) {
-        var rows = Array.from(cell.parentNode.parentNode.children);
+        let rows = Array.from(cell.parentNode.parentNode.children);
         rows.forEach(function(tableRow) {
             Array.from(tableRow.children).forEach(function(cellDom) {
                 cellDom.classList.remove('rowcol-selected');
@@ -199,12 +228,12 @@ cells.forEach(function(cell, i) {
         }
     });
     cell.addEventListener('keypress', function(event) {
-        var e = event ? event : window.event;
+        let e = event ? event : window.event;
         e.preventDefault();
-        var code = e.which ? e.which : e.keyCode;
+        let code = e.which ? e.which : e.keyCode;
         if(code > 0x30 && code <= 0x39) {
             cell.textContent = String.fromCharCode(code);
-            var rows = Array.from(cell.parentNode.parentNode.children);
+            let rows = Array.from(cell.parentNode.parentNode.children);
             rows.forEach(function(tableRow) {
                 Array.from(tableRow.children).forEach(function(cellDom) {
                     cellDom.classList.remove('rowcol-selected');
@@ -222,26 +251,26 @@ cells.forEach(function(cell, i) {
 });
 
 function onRowColumnHover(cell) {
-    var rows = Array.from(cell.parentNode.parentNode.children);
+    let rows = Array.from(cell.parentNode.parentNode.children);
     cell.parentNode.classList.toggle('row-hover');     
     rows.forEach(function(tableRow) {
         tableRow.children[cell.cellIndex].classList.toggle('row-hover');
     });
 }
 
-var newgame = document.querySelector("#newgame");
-var solve = document.querySelector("#solve");
-var gamecontrol = document.querySelector("#game-control");
+let newgame = document.querySelector("#newgame");
+let solve = document.querySelector("#solve");
+let gamecontrol = document.querySelector("#game-control");
 newgame.addEventListener('click', function() {
     newgame.style.display = 'none';
     gamecontrol.style.display = 'block';
 });
 
 solve.addEventListener('click', function() {
-    solveGrid(board);
+    fillGrid(board);
     cells.forEach(function(cell, i) {
-        var row = Math.floor(i / 9);
-        var col = i % 9;
+        let row = Math.floor(i / 9);
+        let col = i % 9;
         if(board[row][col] != 0) {
             cell.textContent = board[row][col];
         }
@@ -252,7 +281,7 @@ solve.addEventListener('click', function() {
 });
 
 Array.from(gamecontrol.children).forEach(function(button) {
-    var attempts = 5;
+    let attempts = 5;
     switch(button.id) {
         case 'easy':
             attempts = 5;
@@ -269,8 +298,8 @@ Array.from(gamecontrol.children).forEach(function(button) {
         fillGrid(board);
         prepareGrid(board, attempts);
         cells.forEach(function(cell, i) {
-            var row = Math.floor(i / 9);
-            var col = i % 9;
+            let row = Math.floor(i / 9);
+            let col = i % 9;
             if(board[row][col] != 0) {
                 cell.textContent = board[row][col];
             }
