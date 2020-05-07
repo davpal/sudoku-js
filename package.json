@@ -4,7 +4,8 @@
   "description": "Simple sudoku game implementation in js",
   "main": "sudoku.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "./node_modules/.bin/webpack --watch",
+    "build": "./node_moduels/.bind/webpack"
   },
   "repository": {
     "type": "git",
@@ -23,5 +24,15 @@
   "bugs": {
     "url": "https://github.com/davpal/sudoku-js/issues"
   },
-  "homepage": "https://github.com/davpal/sudoku-js#readme"
+  "homepage": "https://github.com/davpal/sudoku-js#readme",
+  "devDependencies": {
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^3.5.3",
+    "html-webpack-plugin": "^4.3.0",
+    "mini-css-extract-plugin": "^0.9.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  }
 }
