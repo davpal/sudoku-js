@@ -1,16 +1,24 @@
 
+const glob = require('glob');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+let entry = './src/index.js';
+let outputPath = __dirname + '/dist';
+
+if (process.env.TESTBUILD) {
+  entry = glob.sync(__dirname + '/test/**/*.test.js');
+  outputPath = __dirname + '/test-dist';
+}
+
 module.exports = {
-  entry: {
-    entry: './src/index.js',
-  },
+  entry,
   output: {
+    path: outputPath,
     filename: 'main.bundle.js'
   },
   devServer: {
-    contentBase: './dist'
+    contentBase: outputPath
   },
 
   plugins: [

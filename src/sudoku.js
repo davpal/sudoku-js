@@ -1,60 +1,18 @@
 import { initDomBoard } from './dom';
+import { shuffleArray } from './utils';
+import { createEmptyGrid,
+         isGridSolved } from './grid';
 
 initDomBoard();
 
-let board = [];
-board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
-board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
-board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
-board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
-board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
-board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
-board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
-board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
-board.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+let board = createEmptyGrid();
 
 let numberList = [1,2,3,4,5,6,7,8,9];
-
-function shuffle(a) {
-    for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-}
 
 function checkGrid(grid) {
     for(let i = 0; i < 9; ++i)
         for(let j = 0; j < 9; ++j) 
             if(grid[i][j] === 0) return false;
-    return true;
-}
-
-function validGrid(grid) {
-    for(let i = 0; i < 9; ++i) {
-        let rowTotal = grid[i].reduce(function(a, b) {
-            return a + b;
-        }, 0);
-        if(rowTotal !== 45) return false;
-
-        let colTotal = 0;
-        for(let j = 0; j < 9; j++) {
-            colTotal += grid[j][i];
-        }
-        if(colTotal !== 45) return false;
-    }
-
-    for(let k = 0; k < 3; ++k)
-        for(let l = 0; l < 3; ++l) {
-            for(let i = 0; i < 3; ++i) {
-                let squareSum = 0;
-                for(let j = 0; j < 3; j++) {
-                    squareSum += grid[i*k][j*l];
-                }
-            }
-            if(squareSum !== 45) return false;
-        }
-
     return true;
 }
 
@@ -79,7 +37,7 @@ function fillGrid(grid) {
         row = Math.floor(i / 9);
         col = i % 9;
         if(grid[row][col] === 0) {
-            shuffle(numberList);
+            shuffleArray(numberList);
             for(let j = 0; j < 9; j++) {
                 if(!grid[row].includes(numberList[j])) {
                     let inCol = false;
@@ -114,58 +72,7 @@ function columnContains(grid, col, value) {
     return false;
 }
 
-function rowContains(grid, row, value) {
-    return grid[row].includes(value);
-}
 
-function squareContains(grid, row, col, value) {
-    let square = getGridSquare(grid, row, col);
-    return square.includes(value)
-}
-
-function isApplicable(grid, row, col, value) {
-    return !columnContains(grid, col, value) &&
-           !rowContains(grid, row, value) &&
-           !squareContains(grid, row, col, value);
-}
-
-function findUnnassigned(grid) {
-    for(let i = 0; i < grid.length; ++i) {
-        for(let j = 0; j < grid[i].length; ++j) {
-            if(grid[i][j] === 0) {
-                return [i, j];
-            }
-        }
-    }
-    return [];
-}
-
-let counter = 0;
-function solveGrid(grid) {
-    let [row, col] = findUnnassigned(grid);
-    if(!row) return true;
-
-    for(let i = 1; i <= 9; i++) {
-        if(isApplicable(grid, row, col, i)) {
-            grid[row][col] = i;
-            
-            if(checkGrid(grid)) {
-                counter++;
-                break;
-            }
-
-            if(solveGrid(grid)) {
-                return true;
-            }
-
-            grid[row][col] = 0;
-        }
-    }
-
-    grid[row][col] = 0;
-      
-    return false;
-}
 
 function prepareGrid(grid, attempts) {
     while(attempts) {
