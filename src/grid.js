@@ -32,13 +32,14 @@ export class SudokuGrid {
     if(row === null) return true;
 
     for(let i = 1; i <= 9; i++) {
-        if(isCellSafe(this.grid, row, col, i)) {
-          this.grid[row][col] = i;
+      const randNumber = (Math.random() * 9 + 1) >> 0;
+      if(isCellSafe(this.grid, row, col, randNumber)) {
+        this.grid[row][col] = randNumber;
 
-          if(this.fill()) {
-            return true;
-          }
+        if(this.fill()) {
+          return true;
         }
+      }
     }
 
     this.grid[row][col] = 0;
