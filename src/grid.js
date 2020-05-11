@@ -1,5 +1,4 @@
 import { getSquare, isCellSafe, findEmptyCell } from "./grid.utils";
-import { shuffleArray } from './utils';
 
 const difficultyToAttempts = {
   'easy': 5,
