@@ -53,6 +53,8 @@ export function initMenuEvents(onNewGame, onSolve) {
     console.log(sudoku.grid);
     updateDomBoard(sudoku.grid);
   });
+
+  solve.addEventListener('click', onSolve);
 }
 
 let selectedCell = null;
