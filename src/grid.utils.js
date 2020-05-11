@@ -45,5 +45,5 @@ export function findEmptyCell(grid) {
       }
     }
   }
-  return [];
+  return [null];
 }

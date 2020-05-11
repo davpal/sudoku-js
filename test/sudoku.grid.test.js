@@ -21,9 +21,29 @@ describe('SudokuGrid', () => {
     expect(sudokuGrid.grid[row][col]).equal(value);
   });
 
-  it('should tells that grid is solved', () => {
+  it('should tells that grid is solved or not', () => {
     const sudokuGrid = new SudokuGrid();
     expect(sudokuGrid.isSolved()).to.be.false;
+
+    sudokuGrid.grid = [
+      [6, 3, 2, 7, 4, 5, 9, 8, 1],
+      [7, 9, 1, 6, 8, 3, 4, 2, 5],
+      [4, 5, 8, 1, 9, 2, 7, 6, 3],
+      [8, 7, 6, 5, 2, 9, 3, 1, 4],
+      [9, 1, 3, 4, 7, 6, 8, 5, 2],
+      [5, 2, 4, 8, 3, 1, 6, 9, 7],
+      [1, 4, 5, 3, 6, 8, 2, 7, 9],
+      [3, 8, 9, 2, 5, 7, 1, 4, 6],
+      [2, 6, 7, 9, 1, 4, 5, 3, 8]
+    ];
+
+    expect(sudokuGrid.isSolved()).to.be.true
+  });
+
+  it('should fill grid for new game (solved state)', () => {
+    const sudokuGrid = new SudokuGrid();
+    sudokuGrid.fill();
+    expect(sudokuGrid.isSolved()).to.be.true
   });
 });
 
@@ -68,5 +88,7 @@ describe('grid-utils', () => {
 
   it('should return first empty cell (equal to zero)', () => {
     expect(findEmptyCell(grid)).to.eql([0, 3]);
+    const fullGrid = [[1,2,3],[4,5,6]];
+    expect(findEmptyCell(fullGrid)).to.eql([null]);
   });
 });

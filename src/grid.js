@@ -1,23 +1,72 @@
-import { create } from "domain";
-import { getSquare } from "./grid.utils";
+import { getSquare, isCellSafe, findEmptyCell } from "./grid.utils";
+import { shuffleArray } from './utils';
+
+const difficultyToAttempts = {
+  'easy': 5,
+  'medium': 10,
+  'hard': 20,
+  'very hard': 25
+};
 
 /**
  * @Class
  * Represents a standard 9x9 sudoku grid
  */
 export class SudokuGrid {
-  static get gridSize() { return 9; }
+  static get size() { return 9; }
 
   constructor() {
-    this.grid = createEmptyGrid();
+    this.grid = this.createEmptyGrid();
   }
 
   createEmptyGrid() {
-    return Array(SIZE).fill(null).map(() => Array(SIZE).fill(0));
+    return Array(SudokuGrid.size).fill(null).map(() => Array(SudokuGrid.size).fill(0));
   }
 
   setCell(row, col, value) {
     this.grid[row][col] = value;
+  }
+
+  fill() {
+    let [row, col] = findEmptyCell(this.grid);
+    if(row === null) return true;
+
+    for(let i = 1; i <= 9; i++) {
+        if(isCellSafe(this.grid, row, col, i)) {
+          this.grid[row][col] = i;
+
+          if(this.fill()) {
+            return true;
+          }
+        }
+    }
+
+    this.grid[row][col] = 0;
+    return false;
+  }
+
+  prepare(difficulty) {
+    const attempts = difficultyToAttempts[difficulty];
+    while(attempts) {
+      let row = Math.random() * 9 >> 0;
+      let col = Math.random() * 9 >> 0;
+
+      while(grid[row][col] == 0) {
+          row = Math.random() * 9 >> 0;
+          col = Math.random() * 9 >> 0;    
+      }
+      let backup = grid[row][col];
+      grid[row][col] = 0;
+
+      let gridCopy = grid.slice();
+
+      counter = 0;
+      solveGrid(gridCopy);
+      if(counter != 1) {
+          grid[row][col] = backup;
+          --attempts;
+      }
+    }
   }
   
   isSolved() {
@@ -43,47 +92,7 @@ export class SudokuGrid {
   }
 }
 
-class SudokuHelper {
-  constructor(grid) {
-    this.grid = grid;
-  }
 
-
-}
-
-export function createEmptyGrid() {
-    return Array(9).fill(null).map(() => Array(9).fill(0));
-}
-
-export function isGridSolved(grid) {
-    
-}
-
-function rowContains(grid, row, value) {
-    return grid[row].includes(value);
-}
-
-function squareContains(grid, row, col, value) {
-    let square = getGridSquare(grid, row, col);
-    return square.includes(value)
-}
-
-function isApplicable(grid, row, col, value) {
-    return !columnContains(grid, col, value) &&
-           !rowContains(grid, row, value) &&
-           !squareContains(grid, row, col, value);
-}
-
-function findUnnassigned(grid) {
-    for(let i = 0; i < grid.length; ++i) {
-        for(let j = 0; j < grid[i].length; ++j) {
-            if(grid[i][j] === 0) {
-                return [i, j];
-            }
-        }
-    }
-    return [];
-}
 
 let counter = 0;
 function solveGrid(grid) {
