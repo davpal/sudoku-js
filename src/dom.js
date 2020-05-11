@@ -16,6 +16,15 @@ export function renderDomBoard(grid) {
   return sudokuTable;
 }
 
+function updateDomBoard(grid) {
+  const tds = document.querySelectorAll(TABLE_CLASS + ' td');
+  let i = 0;
+  for(let td of tds) {
+    td.textContent = grid[i / 9 >> 0][i % 9];
+    i++;
+  }
+}
+
 export function initBoardEvents(board, onCellInput) {
   const cells = board.querySelectorAll('td');
 
@@ -25,8 +34,6 @@ export function initBoardEvents(board, onCellInput) {
   }
 
   document.addEventListener('keydown', (e) => onKeyDown(e, onCellInput));
-
-  initMenuEvents();
 }
 
 function hide(el) {
@@ -37,87 +44,48 @@ function show(el) {
   el.style.display = 'block';
 }
 
-function initMenuEvents() {
+export function initMenuEvents(onNewGame, onSolve) {
   let newGame = document.querySelector("#newgame");
   let solve = document.querySelector("#solve");
   let gameControl = document.querySelector("#game-control");
-  newgame.addEventListener('click', () => {
-    hide(newGame);
-    hide(solve);
-    show(gameControl)
+  newGame.addEventListener('click', () => {
+    const sudoku = onNewGame();
+    console.log(sudoku.grid);
+    updateDomBoard(sudoku.grid);
   });
-
-// solve.addEventListener('click', function() {
-//     fillGrid(board);
-//     cells.forEach(function(cell, i) {
-//         let row = Math.floor(i / 9);
-//         let col = i % 9;
-//         if(board[row][col] != 0) {
-//             cell.textContent = board[row][col];
-//         }
-//         if(Array.from(cell.classList).includes('number-selected')) {
-//             cell.click();
-//         }
-//     });
-// });
-
-// Array.from(gamecontrol.children).forEach(function(button) {
-//     let attempts = 5;
-//     switch(button.id) {
-//         case 'easy':
-//             attempts = 5;
-//             break;
-//         case 'medium':
-//             attempts = 10;
-//             break;
-//         case 'hard':
-//             attempts = 20;
-//             break;
-//     }
-//     button.addEventListener('click', function(event) {
-//         clearGrid();
-//         fillGrid(board);
-//         prepareGrid(board, attempts);
-//         cells.forEach(function(cell, i) {
-//             let row = Math.floor(i / 9);
-//             let col = i % 9;
-//             if(board[row][col] != 0) {
-//                 cell.textContent = board[row][col];
-//             }
-//             if(Array.from(cell.classList).includes('number-selected')) {
-//                 cell.click();
-//             }
-//         });
-//         newgame.style.display = 'inline-block';
-//         solve.style.display = 'inline-block';
-//         gamecontrol.style.display = 'none';
-//     });
-// })
-
 }
 
 let selectedCell = null;
 function onCellClick(x, y, e) {
-  selectCell(e.target);
-
-  // TODO: highlight clicked number
-  // TODO: highlight column
-  // TODO: highlight row
-  // TODO: enable edit mode
+  toggleCell(e.target);
 }
 
-function selectCell(c) {
+function toggleCell(c) {
   if(selectedCell) {
     selectedCell.classList.toggle('number-active');
+    toggleColumn(selectedCell);
+    toggleRow(selectedCell);
   }
 
   c.classList.toggle('number-active');
+  toggleColumn(c);
+  toggleRow(c);
   selectedCell = c;
 }
 
+function toggleRow(c) {
+  c.parentElement.classList.toggle('rowcol-selected');
+}
+
+function toggleColumn(c) {
+  const tbody = c.parentElement.parentElement;
+  const columnCells = tbody.querySelectorAll('td:nth-child(' + (c.cellIndex + 1) + ')');
+  for(let cell of columnCells) {
+    cell.classList.toggle('rowcol-selected');
+  }
+}
+
 function onKeyDown(e, onCellInput) {
-  e.preventDefault();
-  console.log(e.keyCode);
   const code = e.which ? e.which : e.keyCode;
   if(!selectedCell || (code !== 32 && !isNumberKey(code))) return;
   let conflictCell = onCellInput(0, 0, 1)

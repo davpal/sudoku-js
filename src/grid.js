@@ -15,7 +15,7 @@ export class SudokuGrid {
   static get size() { return 9; }
 
   constructor() {
-    this.grid = this.createEmptyGrid();
+    this.reset();
   }
 
   createEmptyGrid() {
@@ -24,6 +24,10 @@ export class SudokuGrid {
 
   setCell(row, col, value) {
     this.grid[row][col] = value;
+  }
+
+  reset() {
+    this.grid = this.createEmptyGrid();
   }
 
   fill() {
