@@ -6,7 +6,7 @@ export function renderDomBoard(grid) {
   for(let i = 0; i < 9; i++) {
     tableHtml += '<tr>';
     for(let j = 0; j < 9; j++) {
-      tableHtml += '<td>' + grid[i][j] + '</td>';
+      tableHtml += '<td>' + (grid[i][j] ? grid[i][j] : '') + '</td>';
     }
     tableHtml += '</tr>';
   }
@@ -20,7 +20,8 @@ function updateDomBoard(grid) {
   const tds = document.querySelectorAll(TABLE_CLASS + ' td');
   let i = 0;
   for(let td of tds) {
-    td.textContent = grid[i / 9 >> 0][i % 9];
+    const value = grid[i / 9 >> 0][i % 9];
+    td.textContent = value ? value : '';
     i++;
   }
 }
@@ -50,11 +51,14 @@ export function initMenuEvents(onNewGame, onSolve) {
   let gameControl = document.querySelector("#game-control");
   newGame.addEventListener('click', () => {
     const sudoku = onNewGame();
-    console.log(sudoku.grid);
     updateDomBoard(sudoku.grid);
   });
 
-  solve.addEventListener('click', onSolve);
+  solve.addEventListener('click', () => {
+    const sudoku = onSolve();
+    console.log(sudoku.grid);
+    updateDomBoard(sudoku.grid);
+  });
 }
 
 let selectedCell = null;
@@ -89,13 +93,13 @@ function toggleColumn(c) {
 
 function onKeyDown(e, onCellInput) {
   const code = e.which ? e.which : e.keyCode;
-  if(!selectedCell || (code !== 32 && !isNumberKey(code))) return;
+  if(!selectedCell || !isAllowedKey(code)) return;
   let conflictCell = onCellInput(0, 0, 1)
   selectedCell.textContent = String.fromCharCode(code);
 }
 
-function isNumberKey(code) {
-  return (code >= 48 && code <= 57);
+function isAllowedKey(code) {
+  return (code >= 48 && code <= 57) || code !== 32;
 }
 
 

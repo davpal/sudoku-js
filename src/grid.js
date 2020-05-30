@@ -1,11 +1,9 @@
 import { getSquare, isCellSafe, findEmptyCell } from "./grid.utils";
 
-const difficultyToAttempts = {
-  'easy': 5,
-  'medium': 10,
-  'hard': 20,
-  'very hard': 25
-};
+export const EASY = 5,
+             MEDIUM = 10,
+             HARD = 20,
+             VERY_HARD = 50;
 
 /**
  * @Class
@@ -49,25 +47,23 @@ export class SudokuGrid {
     return false;
   }
 
-  prepare(difficulty) {
-    const attempts = difficultyToAttempts[difficulty];
+  prepare(attempts) {
     while(attempts) {
       let row = Math.random() * 9 >> 0;
       let col = Math.random() * 9 >> 0;
 
-      while(grid[row][col] == 0) {
-          row = Math.random() * 9 >> 0;
-          col = Math.random() * 9 >> 0;    
+      while(this.grid[row][col] == 0) {
+        row = Math.random() * 9 >> 0;
+        col = Math.random() * 9 >> 0;    
       }
-      let backup = grid[row][col];
-      grid[row][col] = 0;
 
-      let gridCopy = grid.slice();
+      this.grid[row][col] = 0;
+
+      //let gridCopy = grid.slice();
 
       counter = 0;
-      solveGrid(gridCopy);
       if(counter != 1) {
-          grid[row][col] = backup;
+          //this.grid[row][col] = backup;
           --attempts;
       }
     }
