@@ -35,7 +35,7 @@ export class SudokuGrid {
     for(let i = 1; i <= 9; i++) {
       const randNumber = (Math.random() * 9 + 1) >> 0;
       if(isCellSafe(this.grid, row, col, randNumber)) {
-        this.grid[row][col] = randNumber;
+        this.setCell(row, col, randNumber);
 
         if(this.fill()) {
           return true;
@@ -47,8 +47,11 @@ export class SudokuGrid {
     return false;
   }
 
+  solve() { this.grid = this.solved }
+
   prepare(attempts) {
-    while(attempts) {
+    this.solved = this.grid.map(row => [...row]);
+    while(attempts--) {
       let row = Math.random() * 9 >> 0;
       let col = Math.random() * 9 >> 0;
 
@@ -58,14 +61,6 @@ export class SudokuGrid {
       }
 
       this.grid[row][col] = 0;
-
-      //let gridCopy = grid.slice();
-
-      counter = 0;
-      if(counter != 1) {
-          //this.grid[row][col] = backup;
-          --attempts;
-      }
     }
   }
   
@@ -94,29 +89,3 @@ export class SudokuGrid {
 
 
 
-let counter = 0;
-function solveGrid(grid) {
-    let [row, col] = findUnnassigned(grid);
-    if(!row) return true;
-
-    for(let i = 1; i <= 9; i++) {
-        if(isApplicable(grid, row, col, i)) {
-            grid[row][col] = i;
-            
-            if(checkGrid(grid)) {
-                counter++;
-                break;
-            }
-
-            if(solveGrid(grid)) {
-                return true;
-            }
-
-            grid[row][col] = 0;
-        }
-    }
-
-    grid[row][col] = 0;
-      
-    return false;
-}
