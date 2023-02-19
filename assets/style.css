@@ -1,10 +1,19 @@
+
+:root {
+  --color-primary-0: #4EBBB7;
+  --color-primary-1: #ADEDEA;
+  --color-primary-2: #78D6D3;
+  --color-primary-3: #2F9E99;
+  --color-primary-4: #168E89;
+}
+
 html, body {
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
     margin: 0;
     padding: 0;
-    background: steelblue;
-    color: white;
+    background-color: var( --color-primary-4);
+    color: var(--color-primary-1);
 }
 
 .sudoku {
@@ -23,7 +32,7 @@ html, body {
     width: 50px;
     height: 50px;
     text-align: center;
-    border: 1px solid #fff;
+    border: 1px solid var(--color-primary-1);
     transition: 0.3s background;
     caret-color: transparent;
 }
@@ -38,30 +47,25 @@ html, body {
     color: steelblue;
 }
 
-td.number-selected {
-    background: orangered;
-    color: #fff;
-}
-
-.sudoku td.number-active {
-    background: #eee;
-    color: steelblue;
+.sudoku td.number-active, td.number-selected {
+    background: var(--color-primary-1);
+    color: var(--color-primary-4);
 }
 
 .rowcol-selected {
-    background: skyblue;
-    color: steelblue;
+    background-color: var(--color-primary-2);
+    color: var(--color-primary-3);
 }
 
 
 .sudoku td:nth-child(3),
 .sudoku td:nth-child(6) {
-    border-right: 5px solid #fff;
+    border-right: 5px solid var(--color-primary-1);
 }
 
 .sudoku tr:nth-child(3) td,
 .sudoku tr:nth-child(6) td {
-    border-bottom: 5px solid #fff;
+    border-bottom: 5px solid var(--color-primary-1);
 }
 
 .container {
@@ -73,7 +77,7 @@ td.number-selected {
 
 .nav, #game-control {
     width: 100%;
-    background: #000;
+
     transition: 0.5s all;
 }
 
@@ -82,7 +86,7 @@ h1 {
 }
 
 button {
-    background: #000;
+    background-color: var(--color-primary-4);
     color: white;
     transition: 0.5s;
     border: 0px;
@@ -95,5 +99,5 @@ button {
 
 button:hover {
     background: #fff;
-    color: steelblue;
+    color: var(--color-primary-3)
 }
