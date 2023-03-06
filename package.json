@@ -2,7 +2,6 @@
   "name": "sudoku-js",
   "version": "1.0.0",
   "description": "Simple sudoku game implementation in js",
-  "main": "sudoku.js",
   "scripts": {
     "start": "parcel src/index.html",
     "build": "parcel build --no-cache --public-url /sudoku src/index.html",
@@ -29,6 +28,7 @@
   "devDependencies": {
     "@babel/core": "^7.9.6",
     "@babel/preset-env": "^7.9.6",
+    "@parcel/transformer-sass": "^2.8.3",
     "babel-loader": "^8.1.0",
     "chai": "^4.2.0",
     "css-loader": "^3.5.3",

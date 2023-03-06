@@ -35,6 +35,8 @@ html, body {
     border: 1px solid var(--color-primary-1);
     transition: 0.3s background;
     caret-color: transparent;
+    transition: 2s all;
+    transform: translateX(random() * 1000);
 }
 
 .sudoku td:hover {
@@ -100,4 +102,15 @@ button {
 button:hover {
     background: #fff;
     color: var(--color-primary-3)
+}
+
+.game-control__numbers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.selected-number {
+    background-color: var(--color-primary-2);
 }

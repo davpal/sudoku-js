@@ -1,10 +1,11 @@
 import ReactDOM from "react-dom/client";
 import "./sudoku";
-import "../assets/style.css";
+import "../assets/style.scss";
 
 import { useEffect, useState } from "react";
 import { getSquare, isCellSafe, findEmptyCell } from "./grid.utils";
-import SudokuGrid from './SudokuGrid';
+import SudokuGrid from './components/SudokuGrid';
+import GameControl from './components/GameControl';
 
 function createEmptyGrid() {
   return Array(9)
@@ -63,15 +64,20 @@ function prepare(grid, attempts) {
   }
 }
 
+function createGameGrid(difficulty) {
+  const grid = createEmptyGrid();
+  fill(grid);
+  prepare(grid, difficulty);
+  return grid;
+}
+
 const App = () => {
-  const [grid, setGrid] = useState(createEmptyGrid());
+  const [grid, setGrid] = useState(createGameGrid(20));
   const [gameReady, setGameReady] = useState(false);
-  const [selectedCell, selectCell] = useState({ x: 0, y: 0 });
+  const [selectedNumber, selectNumber] = useState(0);
 
   const onNewGame = (difficulty) => {
-    const newGrid = createEmptyGrid();
-    fill(newGrid);
-    prepare(newGrid, difficulty);
+    const newGrid = createGameGrid(difficulty);
     setGrid(newGrid);
     setGameReady(false);
   };
@@ -82,7 +88,16 @@ const App = () => {
     setGrid(solvedGrid);
   };
 
-  useEffect(() => onNewGame(), []);
+  const placeNumber = (x, y, num) => {
+    const gridClone = grid.map((row) => [...row]);
+    gridClone[x][y] = num;
+    setGrid(gridClone);
+  }
+
+  const onNumberSelect = (num) => {
+    if(num === selectedNumber) selectNumber(0);
+    else selectNumber(num);
+  }
 
   const difficultyButtons = [
     { name: "easy", value: 10 },
@@ -108,8 +123,9 @@ const App = () => {
         </div>
       </header>
       <div className="container">
-        <SudokuGrid grid={grid} selectedCell={selectedCell} selectCell={selectCell} />
+        <SudokuGrid grid={grid} onCellClick={placeNumber} selectedNumber={selectedNumber} />
       </div>
+      <GameControl onNumberSelect={onNumberSelect} selectedNumber={selectedNumber}/>
     </>
   );
 };
